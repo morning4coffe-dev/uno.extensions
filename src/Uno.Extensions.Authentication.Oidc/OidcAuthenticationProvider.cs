@@ -6,7 +6,8 @@ namespace Uno.Extensions.Authentication.Oidc;
 
 internal record OidcAuthenticationProvider(
 		ILogger<OidcAuthenticationProvider> ProviderLogger,
-		IOptionsSnapshot<OidcClientOptions> Configuration,
+		IBrowser Browser,
+		IOptions<OidcClientOptions> Configuration,
 		ITokenCache Tokens,
 		OidcAuthenticationSettings? Settings = null) : BaseAuthenticationProvider(ProviderLogger, DefaultName, Tokens)
 {
@@ -23,7 +24,7 @@ internal record OidcAuthenticationProvider(
 			config.RedirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
 			config.PostLogoutRedirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
 		}
-		config.Browser = new WebAuthenticatorBrowser();
+		config.Browser = Browser;
 		_client = new OidcClient(config);
 	}
 
@@ -127,7 +128,5 @@ public class WebAuthenticatorBrowser : IBrowser
 		}
 	}
 
-
-}
 
 
